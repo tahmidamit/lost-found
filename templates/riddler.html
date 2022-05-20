@@ -1,0 +1,149 @@
+{%extends "layout.html"%}
+
+{%block style%}
+<link href="static/rstyles.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        
+        setTimeout(function(){
+            $("#container2").css('display', 'none')
+            $(".container").css('display', 'block')
+            
+            return false;
+        }, 500);
+
+        $('#first_button').click(function(){
+            
+            setTimeout(function(){
+                setTimeout(function(){
+                    
+                    $('#second_qes').css('display', 'block');
+                    
+                    setTimeout(function(){
+                        $('#second_button').css('display', 'block');
+                        return false;
+                    }, 2000);
+                            
+                    return false;
+                    
+
+                }, 600);
+                
+                $('#first_ans').css('display', 'block');
+                    
+                    return false;
+            }, 400);
+
+        });
+
+        $('#second_button').click(function(){
+            
+            setTimeout(function(){
+                setTimeout(function(){
+                    
+                    $('#third_qes').css('display', 'block');
+                    
+                    setTimeout(function(){
+                        $('#third_button').css('display', 'block');
+                        return false;
+                    }, 2000);
+                            
+                    return false;
+                    
+
+                }, 600);
+                
+                $('#second_ans').css('display', 'block');
+                    
+                    return false;
+            }, 400);
+
+        });
+
+        $('#third_button').click(function(){
+
+            setTimeout(function(){
+                $('#third_ans').css('display', 'block');
+                
+                setTimeout(function(){
+                    $('.countdown').css('display', 'inline');
+                    $('.hidden').css('display', 'inline');
+                    return false;
+                }, 1000);
+
+                return false;
+            }, 400)
+            
+
+
+            var doUpdate = function() {
+            $('.countdown').each(function() {
+            var count = parseInt($(this).html());
+            if (count !== 0) {
+                $(this).html(count - 1);
+            }
+            else{
+                alert("tb gb wreel");
+            }
+            });
+            
+            };
+
+            setInterval(doUpdate, 1000);
+        });
+ 
+    });
+</script>
+{%endblock%}
+
+{%block title%}
+riddler
+{%endblock%}
+
+
+{%block main%}
+
+<div id="container2">
+    <h1 style="font-size: 500px;">?</h1>
+</div>
+
+
+<div class="container">    
+    
+    <ul style="text-align: left;">
+        <li>
+            <h5>Question 1: "Those who make me are likely to break me. Who am I?"</h5>
+        </li>
+        <li class="for_buttons">
+            <button id="first_button" class="btn btn-dark">?</button>
+        </li>
+        <li class="for_buttons">
+            <p id="first_ans">The law</p>
+        </li>
+        <li class="for_buttons">
+            <h5 id="second_qes">Question 2: "I can be easy or a dead end. Careful when you cross me. Who am I?"</h5>
+        </li>
+        <li class="for_buttons">
+            <button id="second_button" class="btn btn-dark">?</button>
+        </li>
+        <li class="for_buttons">
+            <p id="second_ans">The street</p>
+        </li>
+        <li class="for_buttons">
+            <h5 id="third_qes">Question 3: "Who is the rat?"</h5>
+        </li>
+        <li class="for_buttons">
+            <button id="third_button" class="btn btn-dark">?</button>
+        </li>
+        <li class="for_buttons">
+            <p id="third_ans">Nothing in this life is for free.</p>
+        </li>
+    </ul>
+    
+    <div style="margin: auto; height: 100px; margin-top: 30px;">
+        <h2 class="hidden">Wait for </h2><h2 class="countdown">39669</h2><h2 class="hidden"> seconds. Find out the next clue.</h2>
+    </div>
+</div>
+
+{%endblock%}

@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{%block style%}
+
+<link href="static/styles.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="static/index.js"></script>
+<script>
+
+  $(document).ready(function(){
+    stopbutton({{num}});
+    disable_stuff({{num}});
+  });
+
+</script>
+{%endblock%}
+
+{%block title%}
+My ads
+{%endblock%}
+
+{%block main%}
+
+<div class="container">
+
+    <h1 id="hasss">{{usr.username}}</h1>
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+  {%for i in row%}
+      <div class="col">
+        <div class="card2">
+          <img src="{{i.image}}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">{{i.title}}</h5>
+            <p class="card-text">{{i.caption}}</p>
+            <small style="color: #198754;" class="card-text">{{i.date}}({{i.district}})</small>
+            <a href="{{i.post_link}}" class=" stretched-link"></a>
+          </div>
+          <div class="go-corner">
+            <div class="go-arrow">
+              →
+            </div>
+          </div>
+        </div>
+      </div>
+  {%endfor%}
+  </div>
+  
+  <div id="change_buttons" style="padding-top: 45px;">
+    <a href="" id="preb" class="previous round">
+      <button id="bp">&#8249;</button>
+    </a>
+    <a href="" id="nextb" class="next round">
+      <button id="np">&#8250;</button>
+    </a>
+  </div>
+</div>
+{%endblock%}

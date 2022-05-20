@@ -1,0 +1,75 @@
+{%extends "layout.html"%}
+
+{%block style%}
+<link href="static/rstyles.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        
+        setTimeout(function(){
+            $("#container2").css('display', 'none')
+            $(".container").css('display', 'block')
+            
+            return false;
+        }, 500);
+
+        $('#upload').on('submit', function(event){
+
+            event.preventDefault();
+            
+            $('#sub').prop('disabled', true);
+            var formData = new FormData($('#upload')[0]);
+            $.ajax({
+                type : 'POST',
+                url : '/jerry',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                
+                success: function (data) {
+                    $('#alert').show();
+                    $('#alert-text').html("");
+                    $('#alert-text').html(data.message);
+                    $('#sub').prop('disabled', false);
+
+
+                }
+            });
+            return false;
+        });
+ 
+    });
+</script>
+{%endblock%}
+
+{%block title%}
+riddler
+{%endblock%}
+
+
+{%block main%}
+
+<div id="container2">
+    <h1 style="font-size: 500px;">?</h1>
+</div>
+
+
+<div class="container">    
+    
+
+    <div id="alert" style="display: none;" class="alert alert-success mb-2 text-center" role="alert">
+        <strong id="alert-text"></strong>
+    </div>
+
+    <h2>Who is the biggest rat of Indian subcontinent?</h2>
+    <small>check spelling</small>
+    
+    <form id="upload" action="/jerry" method="post">
+
+        <input style="margin-top: 40px;" type="text" id="title" required name="rat">
+        <input type="submit" id="sub" class="btn btn-success" value="Submit">
+    </form>
+</div>
+
+{%endblock%}

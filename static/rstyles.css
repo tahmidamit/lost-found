@@ -1,0 +1,53 @@
+.container {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    margin-bottom: 30px;
+    display: none;
+
+}
+
+p.para{
+    text-align: justify;
+}
+
+.for_buttons{
+    list-style-type: none;
+}
+#first_ans{
+    display: none;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+#second_qes{
+    display: none;
+    margin-top: 35px;
+}
+#second_button{
+    display: none;
+}
+#second_ans{
+    display: none;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+#third_qes{
+    display: none;
+    margin-top: 35px;
+}
+#third_button{
+    display: none;
+}
+#third_ans{
+    display: none;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.countdown{
+    display: none;
+}
+
+.hidden{
+    display: none;
+}

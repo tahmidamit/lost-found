@@ -1,0 +1,25 @@
+{%extends "layout.html"%}
+
+{%block style%}
+<link href="static/astyles.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+
+</script>
+{%endblock%}
+
+{%block title%}
+Search
+{%endblock%}
+
+
+{%block main%}
+
+<div class="container">
+    <img alt="apology" class="border img-fluid" src="http://memegen.link/custom/We're-sorry/.jpg?alt=https://res.cloudinary.com/ddbqgroj1/image/upload/v1653030316/cat_tpq6a3.jpg&width=250" title="We're-sorry">
+    <h2 style="margin-top: 30px; margin-bottom: 15px;">Search is unavailable right now</h2>
+    <p> I didn't have enough resources to implement a robust searching feature. As you can see the database is still too small. Maybe I'll implement it in the near future if everything goes well. Meanwhile, enjoy a random song from my playlist.</p>
+</div>
+
+{{song | safe}}
+{%endblock%}

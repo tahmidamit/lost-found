@@ -1,0 +1,98 @@
+{%extends "layout.html"%}
+
+{%block style%}
+<link href="static/kstyles.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    
+    $(document).ready(function(){
+
+        var href = $('.apply-button').attr('href');
+        if(href==""){
+            $('.apply-button').css("display", "none")
+            return false;
+        }
+    });
+    
+    {% if info.usrid == session["user_id"] %}
+
+        $(document).ready(function(){
+        $('#del_button').click(function(event){
+
+            if(confirm("Are you sure you want to delete?")){
+                
+                event.preventDefault();
+                $(this).prop('disabled', true);
+        
+                var formData = new FormData();
+                formData.append('pid', {{info.id}});
+        
+                $.ajax({
+        
+                    type : 'POST',
+                    url : '/del_post',
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    
+                    success: function (data) {
+                        $('#alert').show();
+                        $('#alert-text').html("");
+                        $('#alert-text').html(data.error);
+                        $(this).prop('disabled', false);
+                        if(data.error=="Success"){
+                            setTimeout(function(){
+                                window.location.href = "/my_ads";
+                            }, 1000);
+                            
+                        }
+                    }
+                });
+                }
+
+            
+            return false;
+            });
+        });
+
+    {% endif %}
+
+</script>
+{%endblock%}
+
+{%block title%}
+Ad
+{%endblock%}
+
+
+{%block main%}
+
+<header>
+    <div id="alert" style="display: none;" class="alert alert-success mb-2 text-center" role="alert">
+        <strong id="alert-text"></strong>
+    </div>
+</header>
+
+<div class="container">
+    
+    <div>
+        <img class="img-fluid" src="{{info.image}}" alt="...">
+    </div>
+
+    <a class="apply-button" style="margin-right: 10px;" href="{{info.better_image}}" target="_blank" rel="noopener noreferrer">Better Quality</a>
+    {% if info.usrid == session["user_id"] %}
+        <a style="margin-left: 10px;" id="del_button" href="{{info.better_image}}">Delete Ad</a>
+    {% endif %}
+
+    <h1 class="display-3">{{info.title}}</h1>
+
+    <h4 class="p-3" style="margin-bottom: 35px;">{{info.caption}}</h4>
+    <h4 class="custom_head">Contact info: {{info.info | safe}}</h4>
+    <h4 class="custom_head">District: {{info.district}}</h4>
+    <h4 class="custom_head">Date posted: {{info.date}}</h4>
+    <p>{{info.detail | safe}}</p>
+
+</div>
+
+{%endblock%}

@@ -1,0 +1,111 @@
+{%extends "layout.html"%}
+
+{%block style%}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+  <link href="static/pstyle.css" rel="stylesheet">
+  <script src="static/post.js"></script>
+{%endblock%}
+
+{%block title%}
+Post
+{%endblock%}
+
+{%block main%}
+<header>
+  <div id="alert" style="display: none;" class="alert alert-danger mb-2 text-center" role="alert">
+      <strong id="alert-text"></strong>
+  </div>
+</header>
+
+
+<div class="container">
+  <h1 id="hasss">Post an ad...!</h1>
+  <div style="margin-bottom: 33px;">
+    <small style="color: red;">*</small>
+    <small>marks are required.</small>
+  </div>
+  
+  <form id="upload" action="/post" method="post" enctype="multipart/form-data">
+  
+    <div class="row">
+    <div class="col-25">
+      <strong for="fname">Title: </strong><strong style="color: red;" for="fname">*</strong>
+    </div>
+    <div class="col-75 mb-3">
+      <input type="text" style="display: inline; margin-right: 10px;" id="title" required name="title" placeholder="Within 18 characters.">
+      
+      <small id="remaining"></small>
+      <small id="limit">(Chars Left : 18)</small>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-25">
+      <strong for="lname">Caption: </strong><strong style="color: red;" for="fname">*</strong>
+    </div>
+    <div class="col-75 mb-3">
+      <input type="text" style="display: inline; margin-right: 10px;" required id="caption" name="caption" placeholder="Within 140 characters.">
+      <small id="remaining2"></small>
+      <small id="limit2">(Chars Left : 140)</small>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-25">
+      <strong for="lname">Contact info: </strong><strong style="color: red;" for="fname">*</strong>
+    </div>
+    <div class="col-75 mb-3">
+      <input type="text" style="display: inline; margin-right: 10px;" required id="info" name="info" placeholder="Within 50 characters.">
+      <small id="remaining3"></small>
+      <small id="limit3">(Chars Left : 50)</small>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-25">
+      <strong>District: </strong><strong style="color: red;" for="fname">*</strong>
+    </div>
+    <div id="hi" class="col-75 mb-3">
+      <select id="select-state" name="district" required placeholder="Select a District.">
+        <option value="" disabled selected>Select a District</option>
+        {% for x in districts %}
+          <option value="{{ x }}">{{ x }}</option>
+        {% endfor %}
+      </select>
+      <small>Select the District where you lost it.</small>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-25">
+      <strong>Image: </strong>
+    </div>
+    <div class="col-75 mb-3">
+      <input type="file" id="file" style="display: inline; margin-right: 10px;" name="file" accept=".jpg, .png .jpeg">
+      <small>Will accept jpg, png and jpeg. Not more than 7MB</small>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-25">
+      <strong for="subject">Description: </strong><strong style="color: red;" for="fname">*</strong>
+    </div>
+    <div id="description" class="col-75">
+      <textarea id="subject" name="subject" placeholder="Write something.." required></textarea>
+    </div>
+  </div>
+  <br>
+  <div class="progress">
+    <div id="progress" class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div>
+  <br>
+  <div class="row">
+    <input type="submit" id="ssub" class="btn-custom" value="Submit">
+  </div>
+  </form>
+</div>
+
+{%endblock%}
