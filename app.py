@@ -26,10 +26,8 @@ app = Flask(__name__)
 
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.testing = False
 
-
-# # Custom filter
-# app.jinja_env.filters["usd"] = usd
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_PERMANENT"] = False
@@ -38,9 +36,10 @@ Session(app)
 
 # Configure CS50 Library to use SQLite database
 # Configure cloudinary sdk to upload and delete images
+# Load the environment variables
 
 db = SQL("sqlite:///lost.db")
-load_dotenv()
+load_dotenv('.env')
 cloudinary.config(cloud_name = os.getenv('CLOUD_NAME'), api_key=os.getenv('API_KEY'), api_secret=os.getenv('API_SECRET'))
 
 
@@ -56,6 +55,7 @@ def after_request(response):
 @app.route("/", methods=["GET"])
 def index():
     
+    #Validate the arguments gotten from user
     num = request.args.get("page")
     check = True
 
@@ -67,6 +67,7 @@ def index():
         if not num.isnumeric():
             return apology("NO NO")
     
+    #Find out the post number and calculate how many pages will it take to tabulate them all
     rows_2 = db.execute("SELECT seq FROM sqlite_sequence WHERE name='posts'")
     rows_3 = db.execute("SELECT seq FROM sqlite_sequence WHERE name='deleted'")
 
@@ -75,8 +76,10 @@ def index():
     if int(num)<1 or int(num)>page_num:
         return apology("Lol out of index")
 
+    # Get all the post details on the homepage
     rows = db.execute("SELECT id, title, caption, district, image, date FROM posts ORDER BY id DESC LIMIT 12 OFFSET ?", (int(num)-1)*12)
 
+    # Transforming the cloudinary images and doing some text processing
     for i in rows:
         
         if i['image'] == "NULL":
@@ -155,6 +158,7 @@ def register():
     """Register user"""
     if request.method == "POST":
 
+        # Validate the user data
         username = request.form.get("username")
         email = request.form.get("email")
         password = request.form.get("password")
@@ -190,14 +194,17 @@ def register():
             error["error"] = "Passwords don't match..!"
             return jsonify(error)
 
+        # Check if user already exists
         rows = db.execute("SELECT username FROM users WHERE username = ?", username.strip())
 
         if len(rows)!=0:
             error["error"] = "User Already exists..!"
             return jsonify(error)
         
+        # Check if email already exists
+        
         rows2 = db.execute("SELECT email FROM users WHERE email = ?", email.strip())
-
+        
         if len(rows2)!=0:
             error["error"] = "Email Already exists..!"
             return jsonify(error)
@@ -220,6 +227,7 @@ def post():
 
     if request.method == "POST":
 
+        # Validating user data
         file = request.files['file']
         title = request.form.get('title')
         caption = request.form.get('caption')
@@ -264,7 +272,7 @@ def post():
             error["error"] = "Please add some details."
             return jsonify(error)
         
-
+        # I would just select it to be just none but there was a bug with cs50's sqlite. It wasn't accepting null values that's why I just went with this
         if not file:
             fileurl = "NULL"
 
@@ -278,7 +286,7 @@ def post():
                 error["error"] = "File errror"
                 return jsonify(error)
 
-
+            # Validating files
             file.seek(0, os.SEEK_END)
             file_length = file.tell()
             file.seek(0, 0)
@@ -287,8 +295,9 @@ def post():
                 error["error"] = "Invalid file size"
                 return jsonify(error)
 
+            # Creating uploading directory and a sequential file name
             UPLOAD_FOLDER = 'static/uploads/' + str(session["user_id"]) + "/"
-        
+
             Path(UPLOAD_FOLDER).mkdir(parents=True, exist_ok=True)
 
             app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -298,9 +307,11 @@ def post():
             
             rows = db.execute("SELECT seq FROM sqlite_sequence WHERE name='posts'")
             
-            
+            # Creating the cloudinary upload directory and file name
             pubfile = UPLOAD_FOLDER + str(session['user_id']) + "_" + str((rows[0]['seq'])+1)
             
+            # Using try because it might fail, files can be corrupted.
+
             try:
                 test_image = Image.open(fileurl)
                 test_image = ImageOps.exif_transpose(test_image)
@@ -321,6 +332,7 @@ def post():
 
         date = datetime.now().strftime("%d/%m/%y %H:%M:%S")
 
+        # Inserting into the database.
         db.execute("INSERT INTO posts (usrid, title, caption, info, district, detail, image, date) VALUES(?, ?, ?, ?, ?, ?, ?, ?)", session["user_id"], title.strip(), caption.strip(), info.strip(), district.strip(), details.strip(), fileurl, date)
 
         error["error"] = "Success"
@@ -336,6 +348,7 @@ def del_post():
 
     if request.method == "POST":
 
+        # Validating user data
         pid = request.form.get('pid')
         error = {}
 
@@ -345,6 +358,7 @@ def del_post():
         if not pid.isnumeric():
             return apology("NO NO")
 
+        # Checking if that post exists or not        
         rows = db.execute("SELECT usrid, image FROM posts WHERE id=?", pid)
 
         if not rows:
@@ -352,7 +366,7 @@ def del_post():
 
         else:
             
-            
+            # Validating the post to the user
             if rows[0]['usrid']==session['user_id']:
                 
                 date = datetime.now().strftime("%d/%m/%y %H:%M:%S")
@@ -381,6 +395,7 @@ def del_post():
 @app.route("/ads", methods = ["GET"])
 def ads():
     
+    # Validating the user data
     num = request.args.get("khoj")
 
     if not num:
@@ -389,6 +404,7 @@ def ads():
     if not num.isnumeric():
         return apology("NO NO")
 
+    # Doing a little bit more validating
     rows_2 = db.execute("SELECT seq FROM sqlite_sequence WHERE name='posts'")
     post_num = rows_2[0]['seq']
 
@@ -400,6 +416,8 @@ def ads():
     if not rows:
         return apology("No ad here")
 
+
+    # Format the data
     if rows[0]['image'] == "NULL":
         rows[0]['image'] = "static/icon.png"
 
@@ -408,6 +426,7 @@ def ads():
         my = rows[0]['image'].split("upload")
         rows[0]['image'] = my[0] + "upload/c_scale,w_461" + my[1] + "upload" + my[2]
     
+    # By using bleach I generated links included in the posts.
     cleaner = Cleaner(tags=[], filters=[LinkifyFilter])
 
     
@@ -423,6 +442,7 @@ def ads():
 @login_required
 def my_index():
     
+    # Validating user inputs
     num = request.args.get("page")
     check = True
 
@@ -434,6 +454,7 @@ def my_index():
         if not num.isnumeric():
             return apology("NO NO")
     
+    # Getting page numbers to tabulate
     rows_2 = db.execute("SELECT COUNT(id) FROM posts WHERE usrid=?", session["user_id"])
     page_num = math.ceil(rows_2[0]['COUNT(id)']/12)
 
@@ -444,7 +465,8 @@ def my_index():
         return apology("Lol out of index")
 
     rows = db.execute("SELECT id, title, caption, district, image, date FROM posts WHERE usrid=? ORDER BY id DESC LIMIT 12 OFFSET ?", session["user_id"], (int(num)-1)*12)
-
+    
+    # Again formatting
     for i in rows:
         
         if i['image'] == "NULL":
@@ -463,6 +485,9 @@ def my_index():
     usr_name = db.execute("SELECT username FROM users WHERE id=?", session["user_id"])
 
     return render_template("my_index.html", row=rows, num=page_num, usr=usr_name[0])
+
+
+# Most of the codes below don't have a lot of functionality. It mostly generates some static pages. And theres the puzzle.
 
 @app.route("/about", methods=["GET"])
 def about():
